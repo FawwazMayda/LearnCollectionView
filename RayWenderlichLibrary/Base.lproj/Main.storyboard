@@ -231,7 +231,7 @@
         <!--Tutorial Detail View Controller-->
         <scene sceneID="BLL-oU-84i">
             <objects>
-                <viewController id="irX-xb-ad7" customClass="TutorialDetailViewController" customModule="RWLibrary" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="TutorialDetailViewController" id="irX-xb-ad7" customClass="TutorialDetailViewController" customModule="RWLibrary" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="gDa-MT-8gM">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

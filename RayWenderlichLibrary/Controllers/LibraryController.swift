@@ -42,6 +42,7 @@ final class LibraryController: UIViewController {
   
   private func setupView() {
     self.title = "Library"
+    collectionView.delegate = self
     collectionView.register(TitleSupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: TitleSupplementaryView.reuseIdentifier)
     
     collectionView.collectionViewLayout = configureLayout()
@@ -103,3 +104,13 @@ extension LibraryController {
     }
 }
 
+extension LibraryController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let tutorial = dataSource.itemIdentifier(for: indexPath),
+            let tutorialDetailVC = storyboard?.instantiateViewController(identifier: TutorialDetailViewController.identifier, creator: { (coder) in
+                return TutorialDetailViewController(coder: coder, tutorial: tutorial)
+            }) {
+            show(tutorialDetailVC, sender: nil)
+        }
+    }
+}

@@ -32,16 +32,23 @@ import UIKit
 final class TutorialDetailViewController: UIViewController {
   
   private let tutorial: Tutorial
-  
+  static let identifier = "TutorialDetailViewController"
+    var dataSource : UICollectionViewDiffableDataSource<Section,Video>!
   @IBOutlet weak var tutorialCoverImageView: UIImageView!
   @IBOutlet weak var titleLabel: UILabel!
   @IBOutlet weak var publishDateLabel: UILabel!
   @IBOutlet weak var queueButton: UIButton!
   @IBOutlet weak var collectionView: UICollectionView!
   
+
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
+    
+    init?(coder : NSCoder, tutorial: Tutorial) {
+        self.tutorial = tutorial
+        super.init(coder: coder)
+    }
   
   lazy var dateFormatter: DateFormatter = {
     let formatter = DateFormatter()
@@ -63,6 +70,9 @@ final class TutorialDetailViewController: UIViewController {
     
     let buttonTitle = tutorial.isQueued ? "Remove from queue" : "Add to queue"
     queueButton.setTitle(buttonTitle, for: .normal)
+    collectionView.collectionViewLayout = configureLayout()
+    configureData()
+    configureSnapshot()
   }
   
   @IBAction func toggleQueued() {
@@ -76,4 +86,44 @@ final class TutorialDetailViewController: UIViewController {
       self.queueButton.layoutIfNeeded()
     }
   }
+}
+
+extension TutorialDetailViewController {
+    
+    func configureLayout() -> UICollectionViewCompositionalLayout {
+        let sectionProvider = { (sectionIndex:Int, layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? in
+            
+            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
+            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+            item.contentInsets = NSDirectionalEdgeInsets(top: 2, leading: 2, bottom: 2, trailing: 2)
+            
+            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.6), heightDimension: .fractionalHeight(0.5))
+            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+            
+            let section = NSCollectionLayoutSection(group: group)
+            section.orthogonalScrollingBehavior = .continuous
+            section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
+            section.interGroupSpacing = 10.0
+            return section
+            
+        }
+        
+        return UICollectionViewCompositionalLayout(sectionProvider: sectionProvider)
+    }
+    func configureData() {
+        dataSource = UICollectionViewDiffableDataSource(collectionView: self.collectionView, cellProvider: { (collectionView, indexPath, video) -> UICollectionViewCell? in
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ContentCell.reuseIdentifier, for: indexPath) as? ContentCell else { fatalError("Cell error")}
+            cell.textLabel.text = video.title
+            return cell
+        })
+    }
+    
+    func configureSnapshot() {
+        var initialSnapshot = NSDiffableDataSourceSnapshot<Section,Video>()
+        tutorial.content.forEach { (section) in
+            initialSnapshot.appendSections([section])
+            initialSnapshot.appendItems(section.videos)
+        }
+        dataSource.apply(initialSnapshot)
+    }
 }

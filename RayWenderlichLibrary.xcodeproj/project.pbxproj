@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4D8758E22479221700ECE220 /* DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D8758E12479221700ECE220 /* DataSource.swift */; };
 		97D3041723615DA600307413 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D3041623615DA600307413 /* AppDelegate.swift */; };
 		97D3041923615DA600307413 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D3041823615DA600307413 /* SceneDelegate.swift */; };
 		97D3041E23615DA600307413 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97D3041C23615DA600307413 /* Main.storyboard */; };
@@ -28,6 +29,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4D8758E12479221700ECE220 /* DataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSource.swift; sourceTree = "<group>"; };
 		97D3041323615DA600307413 /* RWLibrary.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RWLibrary.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		97D3041623615DA600307413 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		97D3041823615DA600307413 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -118,6 +120,7 @@
 			isa = PBXGroup;
 			children = (
 				97D3043D2361610100307413 /* Tutorials.plist */,
+				4D8758E12479221700ECE220 /* DataSource.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -218,6 +221,7 @@
 				97D3043A236160C100307413 /* TutorialCollection.swift in Sources */,
 				97D304462361626100307413 /* ContentCell.swift in Sources */,
 				97D304422361623800307413 /* GradientView.swift in Sources */,
+				4D8758E22479221700ECE220 /* DataSource.swift in Sources */,
 				97D3043223615F7C00307413 /* LibraryController.swift in Sources */,
 				97D30440236161AC00307413 /* QueuedTutorialController.swift in Sources */,
 				97D3043423615FC700307413 /* TutorialDetailController.swift in Sources */,

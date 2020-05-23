@@ -28,7 +28,7 @@
 
 import Foundation
 
-struct Video {
+struct Video: Decodable {
   let url: String
   let title: String
 }

@@ -28,7 +28,16 @@
 
 import Foundation
 
-struct Section {
-  let title: String
-  let videos: [Video]
+struct Section: Decodable, Hashable {
+    let identifier = UUID().uuidString
+    let title: String
+    let videos: [Video]
+    
+    func hash(into hasher: inout Hasher){
+        hasher.combine(identifier)
+    }
+    
+    static func == (lhs:Section, rhs:Section)-> Bool {
+        return lhs.identifier==rhs.identifier
+    }
 }

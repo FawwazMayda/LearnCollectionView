@@ -32,6 +32,8 @@ import UIKit
 final class LibraryController: UIViewController {
   
   @IBOutlet weak var collectionView: UICollectionView!
+    var dataSource : UICollectionViewDiffableDataSource<TutorialCollection,Tutorial>!
+    var tutorialCollections = DataSource.shared.tutorials
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -40,6 +42,9 @@ final class LibraryController: UIViewController {
   
   private func setupView() {
     self.title = "Library"
+    collectionView.collectionViewLayout = configureLayout()
+    configureData()
+    configureSnapshot()
   }
 }
 
@@ -50,9 +55,9 @@ extension LibraryController {
             
             let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
-            item.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
+            item.contentInsets = NSDirectionalEdgeInsets(top: 1, leading: 1, bottom: 1, trailing: 1)
             
-            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.6), heightDimension: .fractionalHeight(0.3))
+            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.6), heightDimension: .fractionalHeight(0.5))
             let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
             
             let section = NSCollectionLayoutSection(group: group)
@@ -64,6 +69,24 @@ extension LibraryController {
         }
         
         return UICollectionViewCompositionalLayout(sectionProvider: sectionProvider)
+    }
+    
+    func configureData() {
+        dataSource = UICollectionViewDiffableDataSource<TutorialCollection,Tutorial>(collectionView: self.collectionView, cellProvider: { (collectionView, indexPath, tutorial) -> UICollectionViewCell? in
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TutorialCell.reuseIdentifier, for: indexPath) as? TutorialCell else {fatalError("Cell cant reused")}
+            cell.titleLabel.text = tutorial.title
+            cell.thumbnailImageView.image = tutorial.image
+            return cell
+        })
+    }
+    
+    func configureSnapshot() {
+        var initialSnapshot = NSDiffableDataSourceSnapshot<TutorialCollection,Tutorial>()
+        tutorialCollections.forEach { (collection) in
+            initialSnapshot.appendSections([collection])
+            initialSnapshot.appendItems(collection.tutorials)
+        }
+        dataSource.apply(initialSnapshot)
     }
 }
 

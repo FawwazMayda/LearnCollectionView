@@ -42,6 +42,8 @@ final class LibraryController: UIViewController {
   
   private func setupView() {
     self.title = "Library"
+    collectionView.register(TitleSupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: TitleSupplementaryView.reuseIdentifier)
+    
     collectionView.collectionViewLayout = configureLayout()
     configureData()
     configureSnapshot()
@@ -64,6 +66,10 @@ extension LibraryController {
             section.orthogonalScrollingBehavior = .continuous
             section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
             section.interGroupSpacing = 10.0
+            
+            let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(44.0))
+            let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .topLeading)
+            section.boundarySupplementaryItems = [header]
             return section
             
         }
@@ -78,6 +84,13 @@ extension LibraryController {
             cell.thumbnailImageView.image = tutorial.image
             return cell
         })
+        
+        dataSource.supplementaryViewProvider = {(collectionView: UICollectionView, kind: String, indexPath: IndexPath) -> UICollectionReusableView? in
+            guard let cell = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TitleSupplementaryView.reuseIdentifier, for: indexPath) as? TitleSupplementaryView else { fatalError("No title View") }
+            cell.textLabel.text = self.tutorialCollections[indexPath.section].title
+            return cell
+            
+        }
     }
     
     func configureSnapshot() {

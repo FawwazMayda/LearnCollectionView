@@ -70,6 +70,7 @@ final class TutorialDetailViewController: UIViewController {
     
     let buttonTitle = tutorial.isQueued ? "Remove from queue" : "Add to queue"
     queueButton.setTitle(buttonTitle, for: .normal)
+    collectionView.register(TitleSupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: TitleSupplementaryView.reuseIdentifier)
     collectionView.collectionViewLayout = configureLayout()
     configureData()
     configureSnapshot()
@@ -91,39 +92,55 @@ final class TutorialDetailViewController: UIViewController {
 extension TutorialDetailViewController {
     
     func configureLayout() -> UICollectionViewCompositionalLayout {
-        let sectionProvider = { (sectionIndex:Int, layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? in
-            
-            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
+        let sectionProvider = { (sectionIndex: Int, layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? in
+              
+            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                 heightDimension: .fractionalHeight(1.0))
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
-            item.contentInsets = NSDirectionalEdgeInsets(top: 2, leading: 2, bottom: 2, trailing: 2)
-            
-            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.6), heightDimension: .fractionalHeight(0.5))
-            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-            
+
+            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                  heightDimension: .absolute(44))
+            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize,
+                                                             subitems: [item])
+
             let section = NSCollectionLayoutSection(group: group)
-            section.orthogonalScrollingBehavior = .continuous
-            section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
-            section.interGroupSpacing = 10.0
-            return section
+            section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 20, trailing: 10)
             
+            let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(44))
+            let sectionHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
+            section.boundarySupplementaryItems = [sectionHeader]
+            
+            return section
+          }
+          
+          let configuration = UICollectionViewCompositionalLayoutConfiguration()
+                  
+          return UICollectionViewCompositionalLayout(sectionProvider: sectionProvider, configuration: configuration)
         }
-        
-        return UICollectionViewCompositionalLayout(sectionProvider: sectionProvider)
-    }
-    func configureData() {
-        dataSource = UICollectionViewDiffableDataSource(collectionView: self.collectionView, cellProvider: { (collectionView, indexPath, video) -> UICollectionViewCell? in
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ContentCell.reuseIdentifier, for: indexPath) as? ContentCell else { fatalError("Cell error")}
-            cell.textLabel.text = video.title
-            return cell
-        })
-    }
     
-    func configureSnapshot() {
-        var initialSnapshot = NSDiffableDataSourceSnapshot<Section,Video>()
-        tutorial.content.forEach { (section) in
-            initialSnapshot.appendSections([section])
-            initialSnapshot.appendItems(section.videos)
-        }
-        dataSource.apply(initialSnapshot)
+    func configureData() {
+           dataSource = UICollectionViewDiffableDataSource(collectionView: self.collectionView, cellProvider: { (collectionView, indexPath, video) -> UICollectionViewCell? in
+               guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ContentCell.reuseIdentifier, for: indexPath) as? ContentCell else { fatalError("Cell error")}
+               cell.textLabel.text = video.title
+               return cell
+           })
+           
+           dataSource.supplementaryViewProvider = {(collectionView: UICollectionView, kind: String, indexPath: IndexPath) -> UICollectionReusableView? in
+               guard let cell = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TitleSupplementaryView.reuseIdentifier, for: indexPath) as? TitleSupplementaryView else { fatalError("No title View") }
+               cell.textLabel.text = self.tutorial.content[indexPath.section].title
+               return cell
+               
+           }
+       }
+       
+       func configureSnapshot() {
+           var initialSnapshot = NSDiffableDataSourceSnapshot<Section,Video>()
+           tutorial.content.forEach { (section) in
+               initialSnapshot.appendSections([section])
+               initialSnapshot.appendItems(section.videos)
+           }
+           dataSource.apply(initialSnapshot)
+       }
     }
-}
+   
+

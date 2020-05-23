@@ -32,7 +32,9 @@ struct TutorialCollection: Decodable, Hashable {
     let title: String
     let tutorials: [Tutorial]
     let identifier = UUID().uuidString
-    
+    var queuedTutorials : [Tutorial] {
+        return tutorials.filter({$0.isQueued})
+    }
     func hash(into hasher: inout Hasher) {
         hasher.combine(identifier)
     }

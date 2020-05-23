@@ -28,8 +28,13 @@
 
 import UIKit
 
-class QueuedTutorialController: UIViewController {
+enum SectionQueue {
+    case main
+}
 
+class QueuedTutorialController: UIViewController {
+    
+  var dataSource : UICollectionViewDiffableDataSource<SectionQueue,Tutorial>!
   lazy var dateFormatter: DateFormatter = {
     let formatter = DateFormatter()
     formatter.dateFormat = "MMM d"
@@ -45,13 +50,18 @@ class QueuedTutorialController: UIViewController {
     super.viewDidLoad()
     setupView()
   }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        configureSnapshot()
+    }
   
   private func setupView() {
     self.title = "Queue"
     navigationItem.leftBarButtonItem = editButtonItem
     navigationItem.rightBarButtonItem = nil
-    
-    
+    collectionView.collectionViewLayout = configureLayout()
+    configureData()
   }
 }
 
@@ -90,4 +100,37 @@ extension QueuedTutorialController {
 
   @IBAction func applyUpdates() {
   }
+}
+
+extension QueuedTutorialController {
+    func configureLayout() -> UICollectionViewCompositionalLayout {
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        item.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
+        
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(144))
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+        
+        let section = NSCollectionLayoutSection(group: group)
+        return UICollectionViewCompositionalLayout(section: section)
+    }
+    
+    func configureData() {
+        dataSource = UICollectionViewDiffableDataSource<SectionQueue,Tutorial>(collectionView: collectionView, cellProvider: { (collectionView, indexpath, tutorial) -> UICollectionViewCell? in
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: QueueCell.reuseIdentifier, for: indexpath) as? QueueCell else {fatalError("Cell error")}
+            cell.thumbnailImageView.image = tutorial.image
+            cell.thumbnailImageView.backgroundColor = tutorial.imageBackgroundColor
+            cell.publishDateLabel.text = tutorial.formattedDate(using: self.dateFormatter)
+            cell.titleLabel.text = tutorial.title
+            return cell
+        })
+    }
+    
+    func configureSnapshot() {
+        var initialSnapshot = NSDiffableDataSourceSnapshot<SectionQueue,Tutorial>()
+        initialSnapshot.appendSections([.main])
+        let initialQueue = DataSource.shared.tutorials.flatMap( {$0.queuedTutorials})
+        initialSnapshot.appendItems(initialQueue)
+        dataSource.apply(initialSnapshot,animatingDifferences: true)
+    }
 }

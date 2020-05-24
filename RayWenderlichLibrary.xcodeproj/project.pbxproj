@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4D5BF7BB247A129E00E2DE7F /* BadgeSupplementaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D5BF7BA247A129E00E2DE7F /* BadgeSupplementaryView.swift */; };
 		4D8758E22479221700ECE220 /* DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D8758E12479221700ECE220 /* DataSource.swift */; };
 		4D8758E4247959E800ECE220 /* TitleSupplementaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D8758E3247959E800ECE220 /* TitleSupplementaryView.swift */; };
 		97D3041723615DA600307413 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D3041623615DA600307413 /* AppDelegate.swift */; };
@@ -30,6 +31,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4D5BF7BA247A129E00E2DE7F /* BadgeSupplementaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgeSupplementaryView.swift; sourceTree = "<group>"; };
 		4D8758E12479221700ECE220 /* DataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSource.swift; sourceTree = "<group>"; };
 		4D8758E3247959E800ECE220 /* TitleSupplementaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleSupplementaryView.swift; sourceTree = "<group>"; };
 		97D3041323615DA600307413 /* RWLibrary.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RWLibrary.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -135,6 +137,7 @@
 				97D304452361626100307413 /* ContentCell.swift */,
 				97D304472361628900307413 /* QueueCell.swift */,
 				4D8758E3247959E800ECE220 /* TitleSupplementaryView.swift */,
+				4D5BF7BA247A129E00E2DE7F /* BadgeSupplementaryView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -221,6 +224,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4D5BF7BB247A129E00E2DE7F /* BadgeSupplementaryView.swift in Sources */,
 				97D3043A236160C100307413 /* TutorialCollection.swift in Sources */,
 				97D304462361626100307413 /* ContentCell.swift in Sources */,
 				97D304422361623800307413 /* GradientView.swift in Sources */,

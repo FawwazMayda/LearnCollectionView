@@ -35,7 +35,7 @@ enum SectionQueue {
 class QueuedTutorialController: UIViewController {
     
     static let badgeElementKind = "badge-element-kind"
-    
+    var timer : Timer?
   var dataSource : UICollectionViewDiffableDataSource<SectionQueue,Tutorial>!
   lazy var dateFormatter: DateFormatter = {
     let formatter = DateFormatter()
@@ -56,6 +56,19 @@ class QueuedTutorialController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         configureSnapshot()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        timer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true, block: { [weak self] (timer) in
+            self?.triggerUpdates()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                [weak self] in
+                self?.applyUpdates()
+            }
+        })
+        
+        
     }
   
   private func setupView() {
@@ -115,6 +128,24 @@ extension QueuedTutorialController {
   }
 
   @IBAction func applyUpdates() {
+    let tutorials = dataSource.snapshot().itemIdentifiers
+    if var firstTutorial = tutorials.first, tutorials.count > 2 {
+        let tutorialsToUpdate = tutorials.filter({$0.updateCount > 0})
+        
+        var snapshot = dataSource.snapshot()
+        tutorialsToUpdate.forEach { (tutor) in
+            if tutor != firstTutorial {
+                snapshot.moveItem(tutor, beforeItem: firstTutorial)
+                firstTutorial = tutor
+            }
+            
+            if let indexPath = dataSource.indexPath(for: tutor) {
+                let badgeView = collectionView.supplementaryView(forElementKind: QueuedTutorialController.badgeElementKind, at: indexPath)
+                badgeView?.isHidden = true
+            }
+        }
+        dataSource.apply(snapshot)
+    }
   }
 }
 
